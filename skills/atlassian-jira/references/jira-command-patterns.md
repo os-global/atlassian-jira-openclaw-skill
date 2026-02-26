@@ -21,6 +21,38 @@ acli jira workitem create --project APP --type Bug --summary 'Checkout button di
 acli jira workitem edit APP-101 --summary 'Checkout button disabled on Safari'
 ```
 
+Use Jira Text Formatting Notation (WikiRenderer) in rich content fields (`--description`, `comment add --text`).
+
+```bash
+DESC=$(cat <<'EOF'
+h2. Checkout regression
+*Impact:* Safari users blocked from payment
+
+h3. Repro
+# Open checkout
+# Click *Pay now*
+# Observe disabled button
+
+{code}
+Error: validation state mismatch
+{code}
+EOF
+)
+acli jira workitem edit APP-101 --description "$DESC"
+```
+
+```bash
+NOTE=$(cat <<'EOF'
+*Status:* Fix merged and deployed.
+{panel:title=Validation}
+- [x] Safari pass
+- [x] Error rate baseline
+{panel}
+EOF
+)
+acli jira workitem comment add APP-101 --text "$NOTE"
+```
+
 ## Assign/transition/comments
 
 ```bash

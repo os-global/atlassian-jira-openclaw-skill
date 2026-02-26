@@ -161,6 +161,58 @@ docker run --rm \
 2) run non-interactive login,
 3) exec passed command.
 
+## Jira text formatting notation (WikiRenderer)
+
+When writing issue descriptions or comments, use Jira Text Formatting Notation to preserve headings, lists, code, panels, links, and emphasis.
+
+Rules:
+- Prefer WikiRenderer markup in `--description` and `workitem comment add --text` content.
+- Keep markup explicit; avoid relying on Markdown conversion.
+- For multi-line rich text, build content with a here-doc and pass it as one string.
+- Preview with `workitem view` after write operations to confirm rendered output.
+
+Example (description):
+
+```bash
+DESC=$(cat <<'EOF'
+h2. Incident summary
+*Impact:* Checkout failed for ~15% of Safari sessions.
+*Window:* 2026-02-26 09:10–09:42 UTC
+
+h3. Reproduction
+# Open checkout page in Safari 17
+# Add any item to cart
+# Click *Pay now* -> button remains disabled
+
+{code:javascript}
+console.error('checkout validation state mismatch');
+{code}
+
+h3. Links
+- [Runbook|https://example.internal/runbooks/checkout]
+- [PR-482|https://github.com/org/repo/pull/482]
+EOF
+)
+
+acli jira workitem edit APP-123 --description "$DESC"
+```
+
+Example (comment):
+
+```bash
+NOTE=$(cat <<'EOF'
+*Update:* Hotfix deployed to production.
+
+{panel:title=Verification}
+- [x] Safari checkout succeeds
+- [x] Error rate back to baseline
+{panel}
+EOF
+)
+
+acli jira workitem comment add APP-123 --text "$NOTE"
+```
+
 ## References
 
 - Atlassian CLI introduction: https://developer.atlassian.com/cloud/acli/guides/introduction/
@@ -168,3 +220,4 @@ docker run --rm \
 - Command reference: https://developer.atlassian.com/cloud/acli/reference/commands/
 - Use ACLI in CI: https://developer.atlassian.com/cloud/acli/guides/use-acli-on-ci/
 - Chaining/output redirection: https://developer.atlassian.com/cloud/acli/guides/manage-command-chaining-and-output-redirection/
+- Jira text formatting notation: https://jira.atlassian.com/secure/WikiRendererHelpAction.jspa?section=all
