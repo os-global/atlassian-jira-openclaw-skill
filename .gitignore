@@ -1,0 +1,12 @@
+# Workspace-local personal context (never commit)
+memory/
+USER.md
+AGENTS.md
+SOUL.md
+IDENTITY.md
+TOOLS.md
+HEARTBEAT.md
+BOOTSTRAP.md
+
+# Build artifacts
+dist/
